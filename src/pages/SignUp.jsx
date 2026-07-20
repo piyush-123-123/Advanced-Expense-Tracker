@@ -3,6 +3,7 @@ import "./SignUp.css";
 import {useState} from "react";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import {Link} from "react-router-dom";
 
 const SignUp=()=>{
     const [email,setEmail]=useState("");
@@ -29,10 +30,6 @@ const SignUp=()=>{
    alert(error.message);
    }
 
-
-  
-     
-     
     }
 
     return (
@@ -56,7 +53,7 @@ const SignUp=()=>{
             </Form.Group>
             <Button type="submit">Sign Up</Button>
         </Form>
-        <p>Have an Account?Login</p>
+        <p>Have an Account?<Link to="/login">Log In</Link></p>
         </div>
 
     )
