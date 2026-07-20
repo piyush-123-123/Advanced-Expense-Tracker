@@ -1,0 +1,12 @@
+
+.custom-div{
+    background-color: aqua;
+    border: 2px solid;
+    width: 40%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   margin: 30%;
+}
