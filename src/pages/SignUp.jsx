@@ -1,6 +1,8 @@
 import {Form,Button} from "react-bootstrap";
 import "./SignUp.css";
 import {useState} from "react";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const SignUp=()=>{
     const [email,setEmail]=useState("");
@@ -8,19 +10,27 @@ const SignUp=()=>{
     const [confirmPassword,setConfirmPassword]=useState("");
 
 
-    const submitHandler=(e)=>{
+    const submitHandler=async (e)=>{
      e.preventDefault();
-     const enteredEmail=email
-     const enteredPassword=password
-     const enteredConfirmPassword=confirmPassword
-     if(enteredPassword!==enteredConfirmPassword){
+    if(password!==confirmPassword){
         alert("Password do not match");
-        return
-     }
-     const userData={
-        enteredEmail,
-        enteredPassword
-     }
+        return;
+    }
+    try {
+    const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+    );
+
+    console.log("User has successfully signed up");
+  console.log(userCredential.user);
+   } catch (error) {
+   alert(error.message);
+   }
+
+
+  
      
      
     }
@@ -34,15 +44,15 @@ const SignUp=()=>{
         <Form className="d-flex flex-column " onSubmit={submitHandler}>
             <Form.Group className="mb-3">
             <Form.Label htmlFor="email">Email Address</Form.Label>
-            <Form.Control id="email" name="email" type="email" placeholder="enter email" value={email} onChange={(e)=>setEmail(e.target.value)}></Form.Control>
+            <Form.Control id="email" name="email" type="email" placeholder="enter email" value={email} onChange={(e)=>setEmail(e.target.value)} required></Form.Control>
             </Form.Group>
             <Form.Group className="mb-3">
             <Form.Label htmlFor="password">Password</Form.Label>
-            <Form.Control id="password" name="password" type="password" placeholder="enter password" value={password} onChange={(e)=>setPassword(e.target.value)}></Form.Control>
+            <Form.Control id="password" name="password" type="password" placeholder="enter password" value={password} onChange={(e)=>setPassword(e.target.value)} required></Form.Control>
             </Form.Group>
             <Form.Group className="mb-3">
             <Form.Label htmlFor="confirmPassword">Confirm Password</Form.Label>
-            <Form.Control id="confirmPassword" type="password" placeholder="Re-enter password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)}></Form.Control>
+            <Form.Control id="confirmPassword" type="password" placeholder="Re-enter password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} required></Form.Control>
             </Form.Group>
             <Button type="submit">Sign Up</Button>
         </Form>
