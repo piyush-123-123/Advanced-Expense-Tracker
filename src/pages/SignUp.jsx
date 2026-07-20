@@ -53,7 +53,7 @@ const SignUp=()=>{
             </Form.Group>
             <Button type="submit">Sign Up</Button>
         </Form>
-        <p>Have an Account?<Link to="/login">Log In</Link></p>
+        <p>Have an Account?<Link to="/">Log In</Link></p>
         </div>
 
     )

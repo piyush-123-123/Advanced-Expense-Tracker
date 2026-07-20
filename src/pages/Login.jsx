@@ -22,7 +22,7 @@ const Login=()=>{
             localStorage.setItem("token",token);
             console.log(localStorage.getItem("token"));
             
-             navigate("/");
+             navigate("/home");
         }
 
         catch(err){
