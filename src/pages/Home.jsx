@@ -1,11 +1,11 @@
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 import "./Home.css";
 import {Button} from "react-bootstrap";
 
 
 
 const Home=()=>{
-
+    const navigate=useNavigate();
     const verifyEmailHandler=async ()=>{
     const tokenId=localStorage.getItem("token");
     try{
@@ -33,6 +33,13 @@ const Home=()=>{
     catch(err){
         alert(err.message);
     }
+  
+
+
+    }
+      const logoutHandler=()=>{
+        localStorage.removeItem("token");
+        navigate("/");
 
 
     }
@@ -42,6 +49,7 @@ const Home=()=>{
         <div className="header">
        <h4>Welcome to Expense Tracker.!!!</h4>
        <p className="fw-bold">Your Profile is incomplete.<Link to="/profile">Complete Now</Link></p>
+       <Button className="logout-btn" onClick={logoutHandler}>Log Out</Button>
         </div>
         <Button className="verify-btn" onClick={verifyEmailHandler}>Verify Your Email</Button>
 

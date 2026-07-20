@@ -5,10 +5,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 2px solid;
     margin: 3%;
 }
 .verify-btn{
     width: 20%;
     margin-left: 40%;
+}
+.logout-btn{
+   margin-bottom: 1%;
 }
