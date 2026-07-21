@@ -1,6 +1,7 @@
 import {Link,useNavigate} from "react-router-dom";
 import "./Home.css";
 import {Button} from "react-bootstrap";
+import ExpenseForm from "../components/Expenses/ExpenseForm";
 
 
 
@@ -52,7 +53,7 @@ const Home=()=>{
        <Button className="logout-btn" onClick={logoutHandler}>Log Out</Button>
         </div>
         <Button className="verify-btn" onClick={verifyEmailHandler}>Verify Your Email</Button>
-
+        <ExpenseForm />
        </div>
     )
 

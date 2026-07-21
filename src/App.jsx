@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoutes"
 import "./App.css";
 
 const App=()=>{
@@ -13,7 +14,7 @@ const App=()=>{
   <BrowserRouter>
   <Routes>
     <Route path="/" element={<Login />} />
-    <Route path="/home" element={<Home />} />
+    <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
     <Route path="/signup" element={<SignUp />} />
     <Route path="/profile" element={<Profile />} />
     <Route path="/resetpassword" element={<ResetPassword />} />
