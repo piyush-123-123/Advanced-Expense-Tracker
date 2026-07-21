@@ -1,8 +1,9 @@
 
 .custom-div{
-    background-color: lightcoral;
+
+    background-color:bisque;
     border: 2px solid;
-    width: 45%;
+    width: 50%;
     height: 45%;
     display: flex;
     flex-direction: column;
@@ -10,4 +11,22 @@
     align-items: center;
     margin-top: 25%;
     margin-left: 25%;
+}
+
+.password-container {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 18px;
+}
+
+.eye-icon:hover {
+  color: #0d6efd;
 }

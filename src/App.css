@@ -1,1 +1,10 @@
 
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-image: url("https://images.openai.com/static-rsc-4/aXFj-NQviW8MQa74-CwJJ_vUC_-7SPOYYQXIaGXB6juYugn5-eLV985VeMOIMwKdCLV5JWlhmYQeQnM2BZC5yiC6zcqLDgPYDjikMvl-GPsge99lQP7zxQ8UaTaBtEXH_RRJtmWdZPF0ooTmp6d-TwmSD0awY_HNATjOTZrVfL_430iaZPHVsy5GlLoXpgWJ?purpose=fullsize");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
