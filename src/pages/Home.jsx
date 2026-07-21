@@ -2,13 +2,21 @@ import {Link,useNavigate} from "react-router-dom";
 import "./Home.css";
 import {Button} from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
+import {useState} from "react";
+import ExpenseList from "../components/Expenses/ExpenseList";
 
 
 
 const Home=()=>{
+
     const navigate=useNavigate();
     const verifyEmailHandler=async ()=>{
     const tokenId=localStorage.getItem("token");
+    
+
+  
+
+
     try{
         const response=await fetch("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAF3mGVzRIVBfcDUwxgUjTKXMgYBXBBY4M",
             {
@@ -34,14 +42,17 @@ const Home=()=>{
     catch(err){
         alert(err.message);
     }
-  
-
 
     }
       const logoutHandler=()=>{
         localStorage.removeItem("token");
         navigate("/");
-
+    }
+    const [expenses,setExpenses]=useState([]);
+      const addExpenseHandler=(expense)=>{
+        setExpenses((prev)=>{
+            return [...prev,expense];
+        })
 
     }
 
@@ -53,7 +64,8 @@ const Home=()=>{
        <Button className="logout-btn" onClick={logoutHandler}>Log Out</Button>
         </div>
         <Button className="verify-btn" onClick={verifyEmailHandler}>Verify Your Email</Button>
-        <ExpenseForm />
+        <ExpenseForm onAddExpense={addExpenseHandler}/>
+        <ExpenseList expenses={expenses}/>
        </div>
     )
 

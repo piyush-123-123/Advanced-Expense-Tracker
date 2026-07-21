@@ -2,7 +2,7 @@ import {Form,Button} from "react-bootstrap";
 import {useState} from "react";
 
 
-const ExpenseForm=()=>{
+const ExpenseForm=({onAddExpense})=>{
     const [money,setMoney]=useState("");
     const [description,setDescription]=useState("");
     const [category,setCategory]=useState("");
@@ -14,7 +14,7 @@ const ExpenseForm=()=>{
         money,description,category
       }
 
-    console.log(expense);
+    onAddExpense(expense);
 
     }
 
