@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoutes"
 import "./App.css";
+import DemoCounter from "./components/DemoCounter"
 
 const App=()=>{
 
@@ -18,6 +19,7 @@ const App=()=>{
     <Route path="/signup" element={<SignUp />} />
     <Route path="/profile" element={<Profile />} />
     <Route path="/resetpassword" element={<ResetPassword />} />
+    <Route path="/demo" element={<DemoCounter />} />
   </Routes>
 </BrowserRouter>
 
