@@ -12,6 +12,8 @@ const Home=()=>{
 
     const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
     const navigate=useNavigate();
+    const [editingExpense, setEditingExpense] = useState(null);
+    const [expenses,setExpenses]=useState([]);
     
 
 
@@ -83,7 +85,7 @@ const Home=()=>{
         localStorage.removeItem("token");
         navigate("/");
     }
-    const [expenses,setExpenses]=useState([]);
+    
       const addExpenseHandler=(expense)=>{
         setExpenses((prev)=>{
             return [...prev,expense];
@@ -117,6 +119,10 @@ const Home=()=>{
 
     }
 
+    const editExpenseHandler = (expense) => {
+     setEditingExpense(expense);
+     }
+
     return (
        <div>
         <div className="header">
@@ -125,8 +131,9 @@ const Home=()=>{
        <Button className="logout-btn" onClick={logoutHandler}>Log Out</Button>
         </div>
         <Button className="verify-btn" onClick={verifyEmailHandler}>Verify Your Email</Button>
-        <ExpenseForm onAddExpense={addExpenseHandler}/>
-        <ExpenseList expenses={expenses} onDeleteExpense={deleteExpenseHandler}/>
+        <ExpenseForm onAddExpense={addExpenseHandler} editingExpense={editingExpense} setEditingExpense={setEditingExpense}
+    setExpenses={setExpenses}/>
+        <ExpenseList expenses={expenses} onDeleteExpense={deleteExpenseHandler} onEditExpense={editExpenseHandler}/>
        </div>
     )
 
