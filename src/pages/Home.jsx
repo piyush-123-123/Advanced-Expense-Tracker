@@ -90,6 +90,32 @@ const Home=()=>{
         })
 
     }
+    const deleteExpenseHandler=async (id)=>{
+
+        try{
+          const response=await fetch(`https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${id}.json`,
+            {
+                method: "DELETE",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+            }
+             
+          )
+          if(!response.ok){
+            throw new Error("Failed to delete")
+          }
+          console.log("Expense successfully deleted");
+          setExpenses(prev=>prev.filter((item)=>item.id!==id));
+        }
+        catch(err){
+            alert(err.message);
+        
+        }
+
+
+    }
 
     return (
        <div>
@@ -100,7 +126,7 @@ const Home=()=>{
         </div>
         <Button className="verify-btn" onClick={verifyEmailHandler}>Verify Your Email</Button>
         <ExpenseForm onAddExpense={addExpenseHandler}/>
-        <ExpenseList expenses={expenses}/>
+        <ExpenseList expenses={expenses} onDeleteExpense={deleteExpenseHandler}/>
        </div>
     )
 

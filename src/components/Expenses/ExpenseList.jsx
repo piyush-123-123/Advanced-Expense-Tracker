@@ -1,6 +1,6 @@
 import ExpenseItem from "./ExpenseItem";
 import "./ExpenseList.css";
-const ExpenseList=({expenses})=>{
+const ExpenseList=({expenses,onDeleteExpense})=>{
 
 return (
     <div className="container">
@@ -8,7 +8,7 @@ return (
   
      <ul className="expense-list">
      {expenses.map((item)=>{
-     return <li key={item.id}><ExpenseItem expense={item}/></li>
+     return <li key={item.id}><ExpenseItem expense={item} onDeleteExpense={onDeleteExpense} /></li>
      })}
     </ul>
     </div>

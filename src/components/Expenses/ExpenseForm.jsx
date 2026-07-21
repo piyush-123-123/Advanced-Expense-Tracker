@@ -8,7 +8,7 @@ const ExpenseForm=({onAddExpense})=>{
     const [category,setCategory]=useState("");
     
 
-    const submitHandler=async (e)=>{
+    const submitHandler = async (e)=>{
         e.preventDefault();
       const expense={
         money,description,category
@@ -36,9 +36,6 @@ const ExpenseForm=({onAddExpense})=>{
       }catch(err){
       alert(err.message);
       }
-
-   
-
     }
 
     return (
