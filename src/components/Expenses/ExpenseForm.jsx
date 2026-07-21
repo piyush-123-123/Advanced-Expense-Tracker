@@ -6,15 +6,38 @@ const ExpenseForm=({onAddExpense})=>{
     const [money,setMoney]=useState("");
     const [description,setDescription]=useState("");
     const [category,setCategory]=useState("");
+    
 
-    const submitHandler=(e)=>{
+    const submitHandler=async (e)=>{
         e.preventDefault();
       const expense={
-        id:Math.random().toString(),
         money,description,category
       }
+    
+      try{
+        const response=await fetch("https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(expense)
+            }
+        )
+        const data=await response.json();
+        if(!response.ok){
+            throw new Error(data.error.message)
+        }
+        onAddExpense({
+            ...expense,
+            id : data.name,
+        })
 
-    onAddExpense(expense);
+      }catch(err){
+      alert(err.message);
+      }
+
+   
 
     }
 
