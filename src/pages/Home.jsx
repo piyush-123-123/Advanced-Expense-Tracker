@@ -2,23 +2,58 @@ import {Link,useNavigate} from "react-router-dom";
 import "./Home.css";
 import {Button} from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
-import {useState} from "react";
+import {useState,useEffect} from "react";
 import ExpenseList from "../components/Expenses/ExpenseList";
+
 
 
 
 const Home=()=>{
 
+    const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
     const navigate=useNavigate();
+    
+
+
+    const fetchHandler=async ()=>{
+       
+        try{
+            const response=await fetch("https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json");
+            const data=await response.json();
+            if(!response.ok){
+                throw new Error(data.error.message);
+            }
+            let receivedExpenses=[];
+
+            if(data===null){
+                setExpenses([]);
+                return;
+            }
+
+            for(const key in data){
+                receivedExpenses.push({
+                    id:key,
+                    ...data[key]
+                })
+            }
+            setExpenses(receivedExpenses);
+
+            
+        }catch(err){
+            alert(err.message);
+        }
+
+    }
+    useEffect(()=>{
+        fetchHandler();
+    },[])
+
+
     const verifyEmailHandler=async ()=>{
     const tokenId=localStorage.getItem("token");
     
-
-  
-
-
     try{
-        const response=await fetch("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyAF3mGVzRIVBfcDUwxgUjTKXMgYBXBBY4M",
+        const response=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`,
             {
                 method:"POST",
                 headers:{
