@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import Login from "./Login";
 
 function DemoCounter() {
 
@@ -7,6 +8,8 @@ function DemoCounter() {
 
   return (
     <div>
+        <Login />
+
       <h1>{count}</h1>
 
       <button onClick={() => dispatch({ type: "incrementBy5"})}>
@@ -16,6 +19,7 @@ function DemoCounter() {
       <button onClick={() => dispatch({type : "decrementBy5"})}>
         Decrement By 5
       </button>
+
     </div>
   );
 }
