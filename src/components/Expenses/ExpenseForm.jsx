@@ -1,12 +1,14 @@
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { expenseActions } from "../store/expenseSlice";
 
 const ExpenseForm = ({
-  onAddExpense,
   editingExpense,
   setEditingExpense,
-  setExpenses,
 }) => {
+  const dispatch = useDispatch();
+
   const [money, setMoney] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -47,12 +49,11 @@ const ExpenseForm = ({
           throw new Error(data.error.message);
         }
 
-        setExpenses((prev) =>
-          prev.map((item) =>
-            item.id === editingExpense.id
-              ? { ...expense, id: editingExpense.id }
-              : item
-          )
+        dispatch(
+          expenseActions.updateExpense({
+            ...expense,
+            id: editingExpense.id,
+          })
         );
 
         setEditingExpense(null);
@@ -74,10 +75,12 @@ const ExpenseForm = ({
           throw new Error(data.error.message);
         }
 
-        onAddExpense({
-          ...expense,
-          id: data.name,
-        });
+        dispatch(
+          expenseActions.addExpense({
+            ...expense,
+            id: data.name,
+          })
+        );
       }
 
       setMoney("");
