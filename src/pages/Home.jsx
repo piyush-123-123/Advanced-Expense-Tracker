@@ -4,12 +4,15 @@ import {Button} from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
 import {useState,useEffect} from "react";
 import ExpenseList from "../components/Expenses/ExpenseList";
+import {authActions} from "../components/store/authSlice";
+import {useDispatch} from "react-redux";
 
 
 
 
 const Home=()=>{
 
+    const dispatch=useDispatch();
     const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
     const navigate=useNavigate();
     const [editingExpense, setEditingExpense] = useState(null);
@@ -81,10 +84,12 @@ const Home=()=>{
     }
 
     }
-      const logoutHandler=()=>{
-        localStorage.removeItem("token");
-        navigate("/");
-    }
+const logoutHandler = () => {
+  dispatch(authActions.logout());
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  navigate("/");
+};
     
       const addExpenseHandler=(expense)=>{
         setExpenses((prev)=>{

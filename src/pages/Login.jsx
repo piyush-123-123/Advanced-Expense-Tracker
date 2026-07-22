@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { authActions } from "../components/store/authSlice"
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +14,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch=useDispatch();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -23,8 +27,16 @@ const Login = () => {
       );
 
       const token = await response.user.getIdToken();
+      const userId=response.user.uid;
       localStorage.setItem("token", token);
-      console.log(localStorage.getItem("token"));
+      localStorage.setItem("userId",userId);
+
+      dispatch(
+       authActions.login({
+          token,userId
+        })
+      );
+
 
       navigate("/home");
     } catch (err) {
