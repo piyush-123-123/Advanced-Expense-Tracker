@@ -4,6 +4,8 @@ const initialState = {
   expenses: [],
   totalExpense: 0,
   premium: false,
+  premiumActivated: false,
+  editingExpense: null,
 };
 
 const calculateTotal = (expenses) => {
@@ -28,6 +30,7 @@ const expenseSlice = createSlice({
       const { total, premium } = calculateTotal(state.expenses);
       state.totalExpense = total;
       state.premium = premium;
+
     },
 
     addExpense(state, action) {
@@ -57,6 +60,16 @@ const expenseSlice = createSlice({
       state.totalExpense = total;
       state.premium = premium;
     },
+    setEditingExpense(state, action) {
+     state.editingExpense = action.payload;
+    },
+
+    clearEditingExpense(state) {
+     state.editingExpense = null;
+     },
+     activatePremium(state) {
+  state.premiumActivated = true;
+},
   },
 });
 

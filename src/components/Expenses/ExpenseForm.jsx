@@ -1,18 +1,16 @@
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector} from "react-redux";
 import { expenseActions } from "../store/expenseSlice";
 
-const ExpenseForm = ({
-  editingExpense,
-  setEditingExpense,
-}) => {
-  const dispatch = useDispatch();
 
+const ExpenseForm = () => {
+  const dispatch = useDispatch();
   const [money, setMoney] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-
+  const editingExpense=useSelector(state=>state.expense.editingExpense);
+  
   useEffect(() => {
     if (editingExpense) {
       setMoney(editingExpense.money);
@@ -23,13 +21,11 @@ const ExpenseForm = ({
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     const expense = {
       money,
       description,
       category,
     };
-
     try {
       if (editingExpense) {
         const response = await fetch(
@@ -42,13 +38,10 @@ const ExpenseForm = ({
             body: JSON.stringify(expense),
           }
         );
-
         const data = await response.json();
-
         if (!response.ok) {
           throw new Error(data.error.message);
         }
-
         dispatch(
           expenseActions.updateExpense({
             ...expense,
@@ -56,7 +49,7 @@ const ExpenseForm = ({
           })
         );
 
-        setEditingExpense(null);
+        dispatch(expenseActions.clearEditingExpense());
       } else {
         const response = await fetch(
           "https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json",

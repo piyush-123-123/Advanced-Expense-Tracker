@@ -1,14 +1,31 @@
 import "./ExpenseItem.css";
 import {Button} from "react-bootstrap";
+import {useDispatch} from "react-redux";
+import { expenseActions } from "../store/expenseSlice";
 
-const ExpenseItem=({expense,onDeleteExpense,onEditExpense})=>{
+const ExpenseItem=({expense})=>{
 
+    const dispatch=useDispatch();
+    const deleteHandler = async () => {
+     try {
+     const response = await fetch(
+       `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${expense.id}.json`,
+       {
+        method: "DELETE",
+      }
+     );
 
-    const deleteHandler=()=>{
-     onDeleteExpense(expense.id);
-    }
+     if (!response.ok) {
+      throw new Error("Failed to delete");
+     }
+
+    dispatch(expenseActions.deleteExpense(expense.id));
+   } catch (err) {
+    alert(err.message);
+   }
+    };
     const editHandler=()=>{
-     onEditExpense(expense)        
+     dispatch(expenseActions.setEditingExpense(expense));   
     }
 
     return (

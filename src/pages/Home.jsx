@@ -2,23 +2,24 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import ExpenseList from "../components/Expenses/ExpenseList";
-import { authActions } from "../components/store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../components/store/expenseSlice";
+import { authActions } from "../components/store/authSlice";
+import {themeActions} from "../components/store/themeSlice";
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const expenses = useSelector((state) => state.expense.expenses);
   const premium = useSelector((state) => state.expense.premium);
   const token = useSelector((state) => state.auth.token);
+  const premiumActivated=useSelector((state)=>state.expense.premiumActivated);
+  const darkTheme=useSelector(state=>state.theme.darkTheme);
 
-  const [editingExpense, setEditingExpense] = useState(null);
 
   const fetchHandler = async () => {
     try {
@@ -78,7 +79,7 @@ const Home = () => {
         throw new Error(data.error.message);
       }
 
-      alert("Verification email sent successfully.");
+      alert("Verification email sent successfully. Please check your inbox.");
     } catch (err) {
       alert(err.message);
     }
@@ -86,51 +87,27 @@ const Home = () => {
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
-
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-
     navigate("/");
   };
 
-  const deleteExpenseHandler = async (id) => {
-    try {
-      const response = await fetch(
-        `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${id}.json`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete");
-      }
-
-      dispatch(expenseActions.deleteExpense(id));
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  const editExpenseHandler = (expense) => {
-    setEditingExpense(expense);
-  };
 
   const activatePremiumHandler = () => {
-    alert("Premium Activated!");
+    dispatch(expenseActions.activatePremium());
   };
+  const toggleThemeHandler=()=>{
+    dispatch(themeActions.toggleTheme());
+  }
 
   return (
-    <div>
+    <div className={darkTheme ? "dark" : "light"}>
       <div className="header">
         <h4>Welcome to Expense Tracker!!!</h4>
 
         <p className="fw-bold">
           Your Profile is incomplete.
-          <Link to="/profile"> Complete Now</Link>
+          <Link to="/profile">Complete Now</Link>
         </p>
 
         <Button className="logout-btn" onClick={logoutHandler}>
@@ -151,16 +128,18 @@ const Home = () => {
           Activate Premium
         </Button>
       )}
+      {premiumActivated && (
+     <Button onClick={toggleThemeHandler}>
+       Toggle Theme
+     </Button>
+     )}
 
       <ExpenseForm
-        editingExpense={editingExpense}
-        setEditingExpense={setEditingExpense}
+
       />
 
       <ExpenseList
         expenses={expenses}
-        onDeleteExpense={deleteExpenseHandler}
-        onEditExpense={editExpenseHandler}
       />
     </div>
   );
