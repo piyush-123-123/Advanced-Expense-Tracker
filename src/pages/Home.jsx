@@ -99,6 +99,28 @@ const Home = () => {
   const toggleThemeHandler=()=>{
     dispatch(themeActions.toggleTheme());
   }
+  const downloadCSVHandler=()=>{
+    
+      const csvData = expenses.map((expense) => {
+    return `${expense.money},${expense.description},${expense.category}`;
+  });
+  const csvContent = csvData.join("\n");
+  const blob = new Blob([csvContent], {
+  type: "text/csv",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+link.href = url;
+link.download = "expenses.csv";
+
+document.body.appendChild(link);
+link.click();
+
+document.body.removeChild(link);
+URL.revokeObjectURL(url);
+
+  
+  }
 
   return (
     <div className={darkTheme ? "dark" : "light"}>
@@ -133,10 +155,13 @@ const Home = () => {
        Toggle Theme
      </Button>
      )}
+     {premiumActivated && (
+     <Button className="m-4" onClick={downloadCSVHandler}>
+      Download CSV
+     </Button>
+      )}
 
-      <ExpenseForm
-
-      />
+      <ExpenseForm/>
 
       <ExpenseList
         expenses={expenses}

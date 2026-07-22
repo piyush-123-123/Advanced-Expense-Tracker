@@ -1,7 +1,6 @@
 
 
 .header{
-
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -9,9 +8,10 @@
     border-bottom: 2px solid;
     margin: 3%;
 }
+
 .verify-btn{
     width: 20%;
-    margin-left: 40%;
+    margin-left: 20%;
 }
 .logout-btn{
    margin-bottom: 1%;
