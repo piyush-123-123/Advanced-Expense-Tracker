@@ -1,10 +1,19 @@
-import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./counterSlice";
+import {createStore} from "redux";
 
-const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
-});
+const counterReducer=(state={counter:0},action)=>{
+    if(action.type=="incrementBy5"){
+     return {
+        counter:state.counter+5
+     }
+    }
+        if(action.type=="decrementBy5"){
+     return {
+        counter:state.counter-5
+     }
+    }
+    return state;
 
+}
+
+const store=createStore(counterReducer);
 export default store;
