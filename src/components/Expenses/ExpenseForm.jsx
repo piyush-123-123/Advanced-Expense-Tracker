@@ -94,7 +94,7 @@ const ExpenseForm = () => {
 
   return (
     <Form className="d-flex flex-column m-5" onSubmit={submitHandler}>
-      <Form.Group className="mb-3" controlId="money">
+      <Form.Group className="mb-3" >
         <Form.Label htmlFor="money">Money (Price)</Form.Label>
         <Form.Control
           id="money"
@@ -105,7 +105,7 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="description">
+      <Form.Group className="mb-3" >
         <Form.Label htmlFor="description">Description</Form.Label>
         <Form.Control
           id="description"
@@ -116,7 +116,7 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="category">
+      <Form.Group className="mb-3" >
         <Form.Label htmlFor="category">Category</Form.Label>
         <Form.Select
           id="category"
