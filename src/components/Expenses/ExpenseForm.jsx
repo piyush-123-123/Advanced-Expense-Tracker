@@ -1,16 +1,19 @@
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { useDispatch ,useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../store/expenseSlice";
-
 
 const ExpenseForm = () => {
   const dispatch = useDispatch();
+
   const [money, setMoney] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const editingExpense=useSelector(state=>state.expense.editingExpense);
-  
+
+  const editingExpense = useSelector(
+    (state) => state.expense.editingExpense
+  );
+
   useEffect(() => {
     if (editingExpense) {
       setMoney(editingExpense.money);
@@ -21,11 +24,13 @@ const ExpenseForm = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     const expense = {
       money,
       description,
       category,
     };
+
     try {
       if (editingExpense) {
         const response = await fetch(
@@ -38,10 +43,13 @@ const ExpenseForm = () => {
             body: JSON.stringify(expense),
           }
         );
+
         const data = await response.json();
+
         if (!response.ok) {
           throw new Error(data.error.message);
         }
+
         dispatch(
           expenseActions.updateExpense({
             ...expense,
@@ -86,9 +94,10 @@ const ExpenseForm = () => {
 
   return (
     <Form className="d-flex flex-column m-5" onSubmit={submitHandler}>
-      <Form.Group className="mb-3">
-        <Form.Label>Money (Price)</Form.Label>
+      <Form.Group className="mb-3" controlId="money">
+        <Form.Label htmlFor="money">Money (Price)</Form.Label>
         <Form.Control
+          id="money"
           type="number"
           value={money}
           onChange={(e) => setMoney(e.target.value)}
@@ -96,9 +105,10 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Description</Form.Label>
+      <Form.Group className="mb-3" controlId="description">
+        <Form.Label htmlFor="description">Description</Form.Label>
         <Form.Control
+          id="description"
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -106,9 +116,10 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3">
-        <Form.Label>Category</Form.Label>
+      <Form.Group className="mb-3" controlId="category">
+        <Form.Label htmlFor="category">Category</Form.Label>
         <Form.Select
+          id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
