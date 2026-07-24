@@ -89,7 +89,7 @@ const getUserData = async () => {
     return (
        <div>
        <div className="header">
-        <h4>Winners never quite,Quitters never win.</h4>
+       <h4>Winners never quite,Quitters never win.</h4>
        <p>Your Profile is Incomplete</p> 
        </div>
        <div className="contact-details ">
