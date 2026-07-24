@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../components/store/expenseSlice";
 import { authActions } from "../components/store/authSlice";
 import {themeActions} from "../components/store/themeSlice";
+import {fetchExpenses} from "../components/store/expenseSlice";
 
 const Home = () => {
 
@@ -21,41 +22,11 @@ const Home = () => {
   const darkTheme=useSelector(state=>state.theme.darkTheme);
 
 
-  const fetchHandler = async () => {
-    try {
-      const response = await fetch(
-        "https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json"
-      );
 
-      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error.message);
-      }
-
-      let receivedExpenses = [];
-
-      if (data === null) {
-        dispatch(expenseActions.setExpenses([]));
-        return;
-      }
-
-      for (const key in data) {
-        receivedExpenses.push({
-          id: key,
-          ...data[key],
-        });
-      }
-
-      dispatch(expenseActions.setExpenses(receivedExpenses));
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchHandler();
-  }, []);
+useEffect(() => {
+  dispatch(fetchExpenses());
+}, [dispatch]);
 
   const verifyEmailHandler = async () => {
     try {

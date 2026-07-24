@@ -1,7 +1,8 @@
 import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { expenseActions } from "../store/expenseSlice";
+import { sendExpenseData } from "../store/expenseSlice";
+
 
 const ExpenseForm = () => {
   const dispatch = useDispatch();
@@ -23,74 +24,29 @@ const ExpenseForm = () => {
   }, [editingExpense]);
 
   const submitHandler = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const expense = {
-      money,
-      description,
-      category,
-    };
-
-    try {
-      if (editingExpense) {
-        const response = await fetch(
-          `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${editingExpense.id}.json`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(expense),
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error.message);
-        }
-
-        dispatch(
-          expenseActions.updateExpense({
-            ...expense,
-            id: editingExpense.id,
-          })
-        );
-
-        dispatch(expenseActions.clearEditingExpense());
-      } else {
-        const response = await fetch(
-          "https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(expense),
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error.message);
-        }
-
-        dispatch(
-          expenseActions.addExpense({
-            ...expense,
-            id: data.name,
-          })
-        );
-      }
-
-      setMoney("");
-      setDescription("");
-      setCategory("");
-    } catch (err) {
-      alert(err.message);
-    }
+  const expense = {
+    money,
+    description,
+    category,
   };
+
+  const resultAction = await dispatch(
+    sendExpenseData({
+      expense,
+      editingExpense,
+    })
+  );
+
+  if (sendExpenseData.fulfilled.match(resultAction)) {
+    setMoney("");
+    setDescription("");
+    setCategory("");
+  } else {
+    alert(resultAction.payload || "Something went wrong");
+  }
+};
 
   return (
     <Form className="d-flex flex-column m-5" onSubmit={submitHandler}>
