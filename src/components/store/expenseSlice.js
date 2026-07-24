@@ -124,6 +124,27 @@ export const fetchExpenses = createAsyncThunk(
     }
   }
 );
+export const deleteExpenseData = createAsyncThunk(
+  "expense/deleteExpenseData",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${id}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete expense");
+      }
+
+      return id;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 
 const expenseSlice = createSlice({
@@ -183,7 +204,7 @@ const expenseSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(fetchExpenses.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -199,7 +220,28 @@ const expenseSlice = createSlice({
       .addCase(fetchExpenses.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(deleteExpenseData.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(deleteExpenseData.fulfilled, (state, action) => {
+  state.loading = false;
+
+  state.expenses = state.expenses.filter(
+    (item) => item.id !== action.payload
+  );
+
+  const { total, premium } = calculateTotal(state.expenses);
+  state.totalExpense = total;
+  state.premium = premium;
+})
+
+.addCase(deleteExpenseData.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+});
   }
 });
 
