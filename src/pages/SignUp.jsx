@@ -1,10 +1,10 @@
 import { Form, Button } from "react-bootstrap";
 import "./SignUp.css";
 import { useState } from "react";
-import { auth } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { signupUser } from "../components/store/authSlice";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -14,25 +14,28 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error } = useSelector((state) => state.auth);
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Password do not match");
+      alert("Passwords do not match");
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+    const resultAction = await dispatch(
+      signupUser({
         email,
-        password
-      );
+        password,
+      })
+    );
 
-      console.log("User has successfully signed up");
-      console.log(userCredential.user);
-    } catch (error) {
-      alert(error.message);
+    if (signupUser.fulfilled.match(resultAction)) {
+      navigate("/home");
     }
   };
 
@@ -45,9 +48,8 @@ const SignUp = () => {
           <Form.Label htmlFor="email">Email Address</Form.Label>
           <Form.Control
             id="email"
-            name="email"
             type="email"
-            placeholder="enter email"
+            placeholder="Enter Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -60,9 +62,8 @@ const SignUp = () => {
           <div className="password-container">
             <Form.Control
               id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="enter password"
+              placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -70,7 +71,7 @@ const SignUp = () => {
 
             <span
               className="eye-icon"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword((prev) => !prev)}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -86,7 +87,7 @@ const SignUp = () => {
             <Form.Control
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Re-enter password"
+              placeholder="Re-enter Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -95,7 +96,7 @@ const SignUp = () => {
             <span
               className="eye-icon"
               onClick={() =>
-                setShowConfirmPassword(!showConfirmPassword)
+                setShowConfirmPassword((prev) => !prev)
               }
             >
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
@@ -103,11 +104,15 @@ const SignUp = () => {
           </div>
         </Form.Group>
 
-        <Button type="submit">Sign Up</Button>
+        {error && <p className="text-danger">{error}</p>}
+
+        <Button type="submit" disabled={loading}>
+          {loading ? "Signing Up..." : "Sign Up"}
+        </Button>
       </Form>
 
       <p>
-        Have an Account?<Link to="/">Log In</Link>
+        Have an Account? <Link to="/">Log In</Link>
       </p>
     </div>
   );

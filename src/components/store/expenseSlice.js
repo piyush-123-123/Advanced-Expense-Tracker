@@ -152,15 +152,7 @@ const expenseSlice = createSlice({
   initialState,
   reducers: {
 
-    deleteExpense(state, action) {
-      state.expenses = state.expenses.filter(
-        (item) => item.id !== action.payload
-      );
 
-      const { total, premium } = calculateTotal(state.expenses);
-      state.totalExpense = total;
-      state.premium = premium;
-    },
     setEditingExpense(state, action) {
       state.editingExpense = action.payload;
     },

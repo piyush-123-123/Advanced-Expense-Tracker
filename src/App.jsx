@@ -6,16 +6,8 @@ import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoutes"
 import "./App.css";
-import {useDispatch} from "react-redux";
-import {useEffect} from "react";
-import {authActions} from "./components/store/authSlice";
-
 
 const App=()=>{
-  const dispatch=useDispatch();
-
-
-
 
  return (
  

@@ -1,46 +1,32 @@
 import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { authActions } from "../components/store/authSlice"
-
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../components/store/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const dispatch=useDispatch();
+
+  const { loading, error } = useSelector((state) => state.auth);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await signInWithEmailAndPassword(
-        auth,
+    const result = await dispatch(
+      loginUser({
         email,
-        password
-      );
+        password,
+      })
+    );
 
-      const token = await response.user.getIdToken();
-      const userId=response.user.uid;
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId",userId);
-
-      dispatch(
-       authActions.login({
-          token,userId
-        })
-      );
-
-
+    if (loginUser.fulfilled.match(result)) {
       navigate("/home");
-    } catch (err) {
-      alert(err.message);
     }
   };
 
@@ -50,12 +36,10 @@ const Login = () => {
 
       <Form className="d-flex flex-column" onSubmit={submitHandler}>
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="email">Email Address</Form.Label>
+          <Form.Label>Email Address</Form.Label>
           <Form.Control
-            id="email"
-            name="email"
             type="email"
-            placeholder="enter email"
+            placeholder="Enter Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -63,14 +47,12 @@ const Login = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="password">Password</Form.Label>
+          <Form.Label>Password</Form.Label>
 
           <div className="password-container">
             <Form.Control
-              id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="enter password"
+              placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -78,18 +60,24 @@ const Login = () => {
 
             <span
               className="eye-icon"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword((prev) => !prev)}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
         </Form.Group>
 
-        <Button type="submit">Log In</Button>
+        {error && <p className="text-danger">{error}</p>}
+
+        <Button type="submit" disabled={loading}>
+          {loading ? "Logging In..." : "Log In"}
+        </Button>
       </Form>
-      <Link to="/resetpassword">Forgot Password ? </Link>
+
+      <Link to="/resetpassword">Forgot Password?</Link>
+
       <p>
-        Do not have an Account?<Link to="/signup">Sign Up</Link>
+        Don't have an account? <Link to="/signup">Sign Up</Link>
       </p>
     </div>
   );
