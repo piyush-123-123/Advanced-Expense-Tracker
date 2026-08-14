@@ -2,25 +2,29 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
-import { useEffect } from "react";
 import ExpenseList from "../components/Expenses/ExpenseList";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { expenseActions } from "../components/store/expenseSlice";
+import { expenseActions, fetchExpenses } from "../components/store/expenseSlice";
 import { authActions } from "../components/store/authSlice";
 import { themeActions } from "../components/store/themeSlice";
-import { fetchExpenses } from "../components/store/expenseSlice";
 
 const Home = () => {
-
   const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const expenses = useSelector((state) => state.expense.expenses);
   const premium = useSelector((state) => state.expense.premium);
+  const premiumActivated = useSelector(
+    (state) => state.expense.premiumActivated
+  );
+  const totalExpense = useSelector(
+    (state) => state.expense.totalExpense
+  );
   const token = useSelector((state) => state.auth.token);
-  const premiumActivated = useSelector((state) => state.expense.premiumActivated);
-  const darkTheme = useSelector(state => state.theme.darkTheme);
-
+  const darkTheme = useSelector((state) => state.theme.darkTheme);
 
   useEffect(() => {
     dispatch(fetchExpenses());
@@ -61,23 +65,27 @@ const Home = () => {
     navigate("/");
   };
 
-
   const activatePremiumHandler = () => {
     dispatch(expenseActions.activatePremium());
   };
+
   const toggleThemeHandler = () => {
     dispatch(themeActions.toggleTheme());
-  }
-  const downloadCSVHandler = () => {
+  };
 
+  const downloadCSVHandler = () => {
     const csvData = expenses.map((expense) => {
-      return `${expense.money},${expense.description},${expense.category}`;
+      return `${expense.money},${expense.description},${expense.category},${expense.date || ""}`;
     });
+
     const csvContent = csvData.join("\n");
+
     const blob = new Blob([csvContent], {
       type: "text/csv",
     });
+
     const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
     link.href = url;
     link.download = "expenses.csv";
@@ -87,52 +95,118 @@ const Home = () => {
 
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }
+  };
 
   return (
-    <div className={darkTheme ? "dark" : "light"}>
-      <div className="header">
-        <h4>Welcome to Expense Tracker!!!</h4>
+    <div className={darkTheme ? "home-page dark" : "home-page light"}>
 
-        <p className="fw-bold">
-          Your Profile is incomplete.
-          <Link to="/profile">Complete Now</Link>
-        </p>
+      <header className="home-header">
+        <div>
+          <h2>Expense Tracker</h2>
+          <p>Manage your expenses smarter with AI.</p>
+        </div>
 
-        <Button className="logout-btn" onClick={logoutHandler}>
-          Log Out
-        </Button>
+        <div className="header-actions">
+          <Button
+            variant="outline-primary"
+            onClick={verifyEmailHandler}
+          >
+            Verify Email
+          </Button>
+
+          <Button
+            variant="outline-danger"
+            onClick={logoutHandler}
+          >
+            Log Out
+          </Button>
+        </div>
+      </header>
+
+   
+      <div className="profile-banner">
+        <div>
+          <strong>Your profile is incomplete.</strong>
+          <p>Complete your profile to keep your account information updated.</p>
+        </div>
+
+        <Link to="/profile" className="profile-link">
+          Complete Now →
+        </Link>
       </div>
 
-      <Button className="verify-btn" onClick={verifyEmailHandler}>
-        Verify Your Email
-      </Button>
+  
+      <div className="stats-grid">
+        <div className="stat-card">
+          <span className="stat-label">Total Expenses</span>
+          <h3>₹ {totalExpense}</h3>
+        </div>
 
-      {premium && (
-        <Button
-          variant="warning"
-          className="m-3"
-          onClick={activatePremiumHandler}
-        >
-          Activate Premium
-        </Button>
+        <div className="stat-card">
+          <span className="stat-label">Total Transactions</span>
+          <h3>{expenses.length}</h3>
+        </div>
+
+        <div className="stat-card">
+          <span className="stat-label">Premium</span>
+
+          <h3>
+            {premiumActivated
+              ? "Active"
+              : premium
+              ? "Available"
+              : "Standard"}
+          </h3>
+        </div>
+      </div>
+
+   
+      {premium && !premiumActivated && (
+        <div className="premium-banner">
+          <div>
+            <h4>⭐ Premium features available</h4>
+            <p>
+              Unlock theme switching and CSV expense export.
+            </p>
+          </div>
+
+          <Button variant="warning" onClick={activatePremiumHandler}>
+            Activate Premium
+          </Button>
+        </div>
       )}
+
       {premiumActivated && (
-        <Button onClick={toggleThemeHandler}>
-          Toggle Theme
-        </Button>
-      )}
-      {premiumActivated && (
-        <Button className="m-4" onClick={downloadCSVHandler}>
-          Download CSV
-        </Button>
+        <div className="premium-actions">
+          <Button variant="dark" onClick={toggleThemeHandler}>
+            Toggle Theme
+          </Button>
+
+          <Button variant="success" onClick={downloadCSVHandler}>
+            Download CSV
+          </Button>
+        </div>
       )}
 
-      <ExpenseForm />
+      
+      <section className="dashboard-section">
+        <div className="section-heading">
+          <h3>Add Expense</h3>
+          <p>Add manually or use AI to fill the form.</p>
+        </div>
 
-      <ExpenseList
-        expenses={expenses}
-      />
+        <ExpenseForm />
+      </section>
+
+    
+      <section className="dashboard-section">
+        <div className="section-heading">
+          <h3>Your Expenses</h3>
+          <p>View, edit and manage your recent transactions.</p>
+        </div>
+
+        <ExpenseList expenses={expenses} />
+      </section>
     </div>
   );
 };

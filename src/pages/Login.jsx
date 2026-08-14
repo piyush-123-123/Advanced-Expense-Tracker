@@ -1,7 +1,7 @@
 import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaWallet } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../components/store/authSlice";
 import "./Auth.css";
@@ -32,54 +32,74 @@ const Login = () => {
   };
 
   return (
-    <div className="custom-div">
-      <h3 className="text-bold">Log In</h3>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-logo">
+          <FaWallet />
+        </div>
 
-      <Form className="d-flex flex-column" onSubmit={submitHandler}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+        <h2 className="auth-title">Welcome Back</h2>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
+        <p className="auth-subtitle">
+          Log in to manage your expenses
+        </p>
 
-          <div className="password-container">
+        <Form onSubmit={submitHandler}>
+          <Form.Group className="auth-group">
+            <Form.Label>Email Address</Form.Label>
+
             <Form.Control
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
+          </Form.Group>
 
-            <span
-              className="eye-icon"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-        </Form.Group>
+          <Form.Group className="auth-group">
+            <Form.Label>Password</Form.Label>
 
-        {error && <p className="text-danger">{error}</p>}
+            <div className="password-container">
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Logging In..." : "Log In"}
-        </Button>
-      </Form>
+              <button
+                type="button"
+                className="eye-icon"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+          </Form.Group>
 
-      <Link to="/resetpassword">Forgot Password?</Link>
+          {error && <p className="auth-error">{error}</p>}
 
-      <p>
-        Don't have an account? <Link to="/signup">Sign Up</Link>
-      </p>
+          <Button
+            type="submit"
+            className="auth-button"
+            disabled={loading}
+          >
+            {loading ? "Logging In..." : "Log In"}
+          </Button>
+        </Form>
+
+        <Link to="/resetpassword" className="forgot-link">
+          Forgot Password?
+        </Link>
+
+        <p className="auth-footer">
+          Don't have an account?{" "}
+          <Link to="/signup">Create Account</Link>
+        </p>
+      </div>
     </div>
   );
 };

@@ -19,17 +19,42 @@ const ExpenseItem = ({ expense }) => {
   };
 
   return (
-    <div className="item">
-      <strong>₹ {expense.money}</strong>
-      <strong>{expense.description}</strong>
-      <strong>{expense.category}</strong>
-      <strong>{expense.date}</strong>
+    <div className="expense-item">
+      <div className="expense-info">
+        <div className="expense-amount">
+          ₹ {expense.money}
+        </div>
 
-      <Button onClick={editHandler}>Edit</Button>
+        <div className="expense-description">
+          {expense.description}
+        </div>
 
-      <Button variant="danger" onClick={deleteHandler}>
-        Delete
-      </Button>
+        <span className="expense-category">
+          {expense.category}
+        </span>
+
+        <div className="expense-date">
+          {expense.date}
+        </div>
+      </div>
+
+      <div className="expense-actions">
+        <Button
+          variant="outline-primary"
+          size="sm"
+          onClick={editHandler}
+        >
+          Edit
+        </Button>
+
+        <Button
+          variant="outline-danger"
+          size="sm"
+          onClick={deleteHandler}
+        >
+          Delete
+        </Button>
+      </div>
     </div>
   );
 };
