@@ -1,5 +1,5 @@
 import { Form, Button } from "react-bootstrap";
-import "./SignUp.css";
+import "./Auth.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";

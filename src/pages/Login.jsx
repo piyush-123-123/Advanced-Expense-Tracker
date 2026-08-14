@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../components/store/authSlice";
+import "./Auth.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
