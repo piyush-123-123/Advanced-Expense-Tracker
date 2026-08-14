@@ -9,7 +9,6 @@ const store=configureStore({
         auth:authReducer,
         expense:expenseReducer,
         theme:themeReducer
-
     }
 
 })

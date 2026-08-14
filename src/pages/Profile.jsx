@@ -1,11 +1,12 @@
 import {Button,Form} from "react-bootstrap";
 import {useState ,useEffect} from "react";
-import { auth } from "../firebase";
+import {useNavigate} from "react-router-dom";
+
 
 import "./Profile.css";
 const Profile=()=>{
 
-
+    const navigate=useNavigate();
     const [name,setName]=useState("");
     const [imageUrl,setImageUrl]=useState("");
    
@@ -81,7 +82,9 @@ const getUserData = async () => {
     }
     const cancelClickHandler=()=>{
         setName("");
-        setImageUrl("")
+        setImageUrl("");
+        navigate("/home");
+        
     }
 
 

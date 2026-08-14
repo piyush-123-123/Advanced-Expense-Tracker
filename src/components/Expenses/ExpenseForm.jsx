@@ -2,7 +2,7 @@ import { Form, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendExpenseData } from "../store/expenseSlice";
-
+import { generateExpenseFromText } from "../../utils/gemini";
 
 const ExpenseForm = () => {
   const dispatch = useDispatch();
@@ -10,6 +10,10 @@ const ExpenseForm = () => {
   const [money, setMoney] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+
+  const [aiText, setAiText] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   const editingExpense = useSelector(
     (state) => state.expense.editingExpense
@@ -20,38 +24,90 @@ const ExpenseForm = () => {
       setMoney(editingExpense.money);
       setDescription(editingExpense.description);
       setCategory(editingExpense.category);
+      setDate(editingExpense.date || "");
     }
   }, [editingExpense]);
 
-  const submitHandler = async (e) => {
-  e.preventDefault();
+  const aiExpenseHandler = async () => {
+    if (!aiText.trim()) {
+      alert("Please describe your expense first");
+      return;
+    }
 
-  const expense = {
-    money,
-    description,
-    category,
+    try {
+      setAiLoading(true);
+
+      const result = await generateExpenseFromText(aiText);
+
+      setMoney(result.money);
+      setDescription(result.description);
+      setCategory(result.category);
+      setDate(result.date);
+
+      setAiText("");
+    } catch (error) {
+      console.error(error);
+      alert("Could not understand the expense");
+    } finally {
+      setAiLoading(false);
+    }
   };
 
-  const resultAction = await dispatch(
-    sendExpenseData({
-      expense,
-      editingExpense,
-    })
-  );
+  const submitHandler = async (e) => {
+    e.preventDefault();
 
-  if (sendExpenseData.fulfilled.match(resultAction)) {
-    setMoney("");
-    setDescription("");
-    setCategory("");
-  } else {
-    alert(resultAction.payload || "Something went wrong");
-  }
-};
+    const expense = {
+      money,
+      description,
+      category,
+      date,
+    };
+
+    const resultAction = await dispatch(
+      sendExpenseData({
+        expense,
+        editingExpense,
+      })
+    );
+
+    if (sendExpenseData.fulfilled.match(resultAction)) {
+      setMoney("");
+      setDescription("");
+      setCategory("");
+      setDate("");
+    } else {
+      alert(resultAction.payload || "Something went wrong");
+    }
+  };
 
   return (
     <Form className="d-flex flex-column m-5" onSubmit={submitHandler}>
-      <Form.Group className="mb-3" >
+      
+  
+      <Form.Group className="mb-4">
+        <Form.Label>✨ Add Expense Using AI</Form.Label>
+
+        <Form.Control
+          type="text"
+          placeholder='Example: "I spent ₹500 on food today"'
+          value={aiText}
+          onChange={(e) => setAiText(e.target.value)}
+        />
+
+        <Button
+          type="button"
+          className="mt-2"
+          onClick={aiExpenseHandler}
+          disabled={aiLoading}
+        >
+          {aiLoading ? "Understanding..." : "Generate Expense"}
+        </Button>
+      </Form.Group>
+
+
+      <Form.Group className="mb-3">
         <Form.Label htmlFor="money">Money (Price)</Form.Label>
+
         <Form.Control
           id="money"
           type="number"
@@ -61,8 +117,10 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" >
+
+      <Form.Group className="mb-3">
         <Form.Label htmlFor="description">Description</Form.Label>
+
         <Form.Control
           id="description"
           type="text"
@@ -72,8 +130,10 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" >
+
+      <Form.Group className="mb-3">
         <Form.Label htmlFor="category">Category</Form.Label>
+
         <Form.Select
           id="category"
           value={category}
@@ -87,6 +147,20 @@ const ExpenseForm = () => {
           <option value="Bills">Bills</option>
         </Form.Select>
       </Form.Group>
+
+ 
+      <Form.Group className="mb-3">
+        <Form.Label htmlFor="date">Date</Form.Label>
+
+        <Form.Control
+          id="date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+      </Form.Group>
+
 
       <Button type="submit">
         {editingExpense ? "Update Expense" : "Add Expense"}

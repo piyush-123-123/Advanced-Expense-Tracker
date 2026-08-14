@@ -18,18 +18,20 @@ const calculateTotal = (expenses) => {
 
   return {
     total,
-    premium: total > 10000,
+    premium: total > 14000,
   };
 };
 
 export const sendExpenseData = createAsyncThunk(
   "expense/sendExpenseData",
-  async (expenseData, { rejectWithValue }) => {
+  async (expenseData, { rejectWithValue, getState }) => {
     try {
+      const userId = getState().auth.userId;
       const { expense, editingExpense } = expenseData;
+
       if (editingExpense) {
         const response = await fetch(
-          `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${editingExpense.id}.json`,
+          `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${userId}/${editingExpense.id}.json`,
           {
             method: "PUT",
             headers: {
@@ -50,16 +52,11 @@ export const sendExpenseData = createAsyncThunk(
             ...expense,
             id: editingExpense.id,
           },
-
-          isEditing: true
-
-        }
-
-
-      }
-      else {
+          isEditing: true,
+        };
+      } else {
         const response = await fetch(
-          "https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json",
+          `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${userId}.json`,
           {
             method: "POST",
             headers: {
@@ -80,25 +77,23 @@ export const sendExpenseData = createAsyncThunk(
             ...expense,
             id: data.name,
           },
-          isEditing: false
-        }
-
-
+          isEditing: false,
+        };
       }
-
     } catch (err) {
       return rejectWithValue(err.message);
     }
   }
+);
 
-
-)
 export const fetchExpenses = createAsyncThunk(
   "expense/fetchExpenses",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
+      const userId = getState().auth.userId;
+
       const response = await fetch(
-        "https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense.json"
+        `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${userId}.json`
       );
 
       const data = await response.json();
@@ -126,10 +121,12 @@ export const fetchExpenses = createAsyncThunk(
 );
 export const deleteExpenseData = createAsyncThunk(
   "expense/deleteExpenseData",
-  async (id, { rejectWithValue }) => {
+  async (id, { rejectWithValue, getState }) => {
     try {
+      const userId = getState().auth.userId;
+
       const response = await fetch(
-        `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${id}.json`,
+        `https://advanced-expense-tracker-5cd9d-default-rtdb.firebaseio.com/expense/${userId}/${id}.json`,
         {
           method: "DELETE",
         }
@@ -151,7 +148,6 @@ const expenseSlice = createSlice({
   name: "expense",
   initialState,
   reducers: {
-
 
     setEditingExpense(state, action) {
       state.editingExpense = action.payload;

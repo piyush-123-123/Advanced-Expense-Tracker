@@ -2,13 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Home.css";
 import { Button } from "react-bootstrap";
 import ExpenseForm from "../components/Expenses/ExpenseForm";
-import {  useEffect } from "react";
+import { useEffect } from "react";
 import ExpenseList from "../components/Expenses/ExpenseList";
 import { useDispatch, useSelector } from "react-redux";
 import { expenseActions } from "../components/store/expenseSlice";
 import { authActions } from "../components/store/authSlice";
-import {themeActions} from "../components/store/themeSlice";
-import {fetchExpenses} from "../components/store/expenseSlice";
+import { themeActions } from "../components/store/themeSlice";
+import { fetchExpenses } from "../components/store/expenseSlice";
 
 const Home = () => {
 
@@ -18,15 +18,13 @@ const Home = () => {
   const expenses = useSelector((state) => state.expense.expenses);
   const premium = useSelector((state) => state.expense.premium);
   const token = useSelector((state) => state.auth.token);
-  const premiumActivated=useSelector((state)=>state.expense.premiumActivated);
-  const darkTheme=useSelector(state=>state.theme.darkTheme);
+  const premiumActivated = useSelector((state) => state.expense.premiumActivated);
+  const darkTheme = useSelector(state => state.theme.darkTheme);
 
 
-
-
-useEffect(() => {
-  dispatch(fetchExpenses());
-}, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchExpenses());
+  }, [dispatch]);
 
   const verifyEmailHandler = async () => {
     try {
@@ -67,28 +65,28 @@ useEffect(() => {
   const activatePremiumHandler = () => {
     dispatch(expenseActions.activatePremium());
   };
-  const toggleThemeHandler=()=>{
+  const toggleThemeHandler = () => {
     dispatch(themeActions.toggleTheme());
   }
-  const downloadCSVHandler=()=>{
-    
-      const csvData = expenses.map((expense) => {
-    return `${expense.money},${expense.description},${expense.category}`;
-  });
-  const csvContent = csvData.join("\n");
-  const blob = new Blob([csvContent], {
-  type: "text/csv",
+  const downloadCSVHandler = () => {
+
+    const csvData = expenses.map((expense) => {
+      return `${expense.money},${expense.description},${expense.category}`;
+    });
+    const csvContent = csvData.join("\n");
+    const blob = new Blob([csvContent], {
+      type: "text/csv",
     });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-link.href = url;
-link.download = "expenses.csv";
+    link.href = url;
+    link.download = "expenses.csv";
 
-document.body.appendChild(link);
-link.click();
+    document.body.appendChild(link);
+    link.click();
 
-document.body.removeChild(link);
-URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -120,17 +118,17 @@ URL.revokeObjectURL(url);
         </Button>
       )}
       {premiumActivated && (
-     <Button onClick={toggleThemeHandler}>
-       Toggle Theme
-     </Button>
-     )}
-     {premiumActivated && (
-     <Button className="m-4" onClick={downloadCSVHandler}>
-      Download CSV
-     </Button>
+        <Button onClick={toggleThemeHandler}>
+          Toggle Theme
+        </Button>
+      )}
+      {premiumActivated && (
+        <Button className="m-4" onClick={downloadCSVHandler}>
+          Download CSV
+        </Button>
       )}
 
-      <ExpenseForm/>
+      <ExpenseForm />
 
       <ExpenseList
         expenses={expenses}

@@ -6,6 +6,13 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 
+const initialState = {
+  token: localStorage.getItem("token") || null,
+  userId: localStorage.getItem("userId") || null,
+  loading: false,
+  error: null,
+  message: null,
+};
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -74,17 +81,10 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-const initialState = {
-  token: localStorage.getItem("token") || null,
-  userId: localStorage.getItem("userId") || null,
-  loading: false,
-  error: null,
-  message: null,
-};
+
 
 const authSlice = createSlice({
   name: "auth",
-
   initialState,
 
   reducers: {
@@ -101,10 +101,7 @@ const authSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder
-
-
-      .addCase(loginUser.pending, (state) => {
+    builder.addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
