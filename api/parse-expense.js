@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
-
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({
@@ -56,7 +55,7 @@ Rules:
 `;
 
     const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
       {
         method: "POST",
         headers: {
@@ -79,9 +78,14 @@ Rules:
 
     const data = await geminiResponse.json();
 
-
     if (!geminiResponse.ok) {
-   
+      console.error("Gemini API error:", data);
+
+      if (geminiResponse.status === 429) {
+        return response.status(429).json({
+          error: "AI limit reached. Please try again later.",
+        });
+      }
 
       return response.status(geminiResponse.status).json({
         error:
@@ -92,11 +96,10 @@ Rules:
     const textOutput =
       data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    console.log("Gemini text:", textOutput);
-
     if (!textOutput) {
       throw new Error("Gemini returned no text");
     }
+
     const cleanText = textOutput
       .replace(/```json/g, "")
       .replace(/```/g, "")
