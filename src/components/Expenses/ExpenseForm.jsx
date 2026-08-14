@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendExpenseData } from "../store/expenseSlice";
 import { generateExpenseFromText } from "../../utils/gemini";
+import "./ExpenseForm.css";
 
 const ExpenseForm = () => {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const ExpenseForm = () => {
       setAiText("");
     } catch (error) {
       console.error(error);
-      alert("Could not understand the expense");
+      alert(error.message || "Could not understand the expense");
     } finally {
       setAiLoading(false);
     }
@@ -81,29 +82,33 @@ const ExpenseForm = () => {
   };
 
   return (
-    <Form className="d-flex flex-column m-5" onSubmit={submitHandler}>
-      
-  
-      <Form.Group className="mb-4">
-        <Form.Label>✨ Add Expense Using AI</Form.Label>
+    <Form className="expense-form" onSubmit={submitHandler}>
+      <div className="ai-expense-box">
+        <Form.Label className="ai-title">
+          ✨ Add Expense Using AI
+        </Form.Label>
 
         <Form.Control
           type="text"
-          placeholder='Example: "I spent ₹500 on food today"'
+          placeholder="Example: I spent ₹500 on food today"
           value={aiText}
           onChange={(e) => setAiText(e.target.value)}
         />
 
+        <small className="ai-help">
+          Describe your expense in simple English and AI will fill the form
+          for you.
+        </small>
+
         <Button
           type="button"
-          className="mt-2"
+          className="ai-button"
           onClick={aiExpenseHandler}
           disabled={aiLoading}
         >
-          {aiLoading ? "Understanding..." : "Generate Expense"}
+          {aiLoading ? "Understanding..." : "✨ Generate Expense"}
         </Button>
-      </Form.Group>
-
+      </div>
 
       <Form.Group className="mb-3">
         <Form.Label htmlFor="money">Money (Price)</Form.Label>
@@ -111,12 +116,12 @@ const ExpenseForm = () => {
         <Form.Control
           id="money"
           type="number"
+          placeholder="Enter amount"
           value={money}
           onChange={(e) => setMoney(e.target.value)}
           required
         />
       </Form.Group>
-
 
       <Form.Group className="mb-3">
         <Form.Label htmlFor="description">Description</Form.Label>
@@ -124,12 +129,12 @@ const ExpenseForm = () => {
         <Form.Control
           id="description"
           type="text"
+          placeholder="Enter description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
       </Form.Group>
-
 
       <Form.Group className="mb-3">
         <Form.Label htmlFor="category">Category</Form.Label>
@@ -148,7 +153,6 @@ const ExpenseForm = () => {
         </Form.Select>
       </Form.Group>
 
- 
       <Form.Group className="mb-3">
         <Form.Label htmlFor="date">Date</Form.Label>
 
@@ -161,8 +165,7 @@ const ExpenseForm = () => {
         />
       </Form.Group>
 
-
-      <Button type="submit">
+      <Button type="submit" className="submit-button">
         {editingExpense ? "Update Expense" : "Add Expense"}
       </Button>
     </Form>
