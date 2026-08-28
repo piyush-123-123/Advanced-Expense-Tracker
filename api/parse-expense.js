@@ -1,7 +1,3 @@
-import dotenv from "dotenv";
-
-dotenv.config({ path: ".env.local" });
-
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({
@@ -15,6 +11,15 @@ export default async function handler(request, response) {
     if (!text || !text.trim()) {
       return response.status(400).json({
         error: "Expense text is required",
+      });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY is missing");
+      return response.status(500).json({
+        error: "Gemini API key is not configured",
       });
     }
 
@@ -55,12 +60,12 @@ Rules:
 `;
 
     const geminiResponse = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
+          "x-goog-api-key": apiKey,
         },
         body: JSON.stringify({
           contents: [
@@ -88,8 +93,7 @@ Rules:
       }
 
       return response.status(geminiResponse.status).json({
-        error:
-          data?.error?.message || "Gemini API request failed",
+        error: data?.error?.message || "Gemini API request failed",
       });
     }
 
