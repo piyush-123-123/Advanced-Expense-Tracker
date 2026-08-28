@@ -14,7 +14,6 @@
     "@google/genai": "^2.17.1",
     "@reduxjs/toolkit": "^2.12.0",
     "bootstrap": "^5.3.8",
-    "dotenv": "^17.4.2",
     "firebase": "^12.16.0",
     "react": "^19.2.7",
     "react-bootstrap": "^2.10.10",
@@ -40,4 +39,5 @@
     "vite": "^8.1.1",
     "vitest": "^4.1.10"
   }
+  
 }
