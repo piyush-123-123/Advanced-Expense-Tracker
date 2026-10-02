@@ -123,17 +123,7 @@ const Home = () => {
         </div>
       </header>
 
-   
-      <div className="profile-banner">
-        <div>
-          <strong>Your profile is incomplete.</strong>
-          <p>Complete your profile to keep your account information updated.</p>
-        </div>
-
-        <Link to="/profile" className="profile-link">
-          Complete Now →
-        </Link>
-      </div>
+ 
 
   
       <div className="stats-grid">

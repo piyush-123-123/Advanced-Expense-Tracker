@@ -11,16 +11,18 @@ const initialState = {
 };
 
 const calculateTotal = (expenses) => {
+
   const total = expenses.reduce(
     (sum, expense) => sum + Number(expense.money),
     0
   );
-
+  
   return {
     total,
     premium: total > 14000,
   };
-};
+
+}
 
 export const sendExpenseData = createAsyncThunk(
   "expense/sendExpenseData",
